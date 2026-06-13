@@ -1,0 +1,827 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Portofolio Digital Marketer — Nuansa Pedesaan</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --kayu: #6B4226;
+    --kayu-muda: #A0714F;
+    --krem: #F5EDD6;
+    --krem-tua: #E8D9B5;
+    --hijau-lumut: #4A5C3A;
+    --hijau-muda: #7A8F65;
+    --tanah: #8B6914;
+    --tinta: #2C1A0E;
+  }
+ 
+  * { box-sizing: border-box; }
+ 
+  html { scroll-behavior: smooth; }
+ 
+  body {
+    background-color: var(--krem);
+    color: var(--tinta);
+    font-family: 'Nunito Sans', sans-serif;
+    overflow-x: hidden;
+  }
+ 
+  /* ── DOOR GATE ── */
+  #gate {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+ 
+  #gate-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--tinta);
+    transition: opacity 0.6s ease;
+  }
+ 
+  .door-panel {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px,
+        transparent 1px, transparent 28px
+      ),
+      linear-gradient(180deg, #5C3317 0%, #6B4226 40%, #7A4F2D 70%, #5C3317 100%);
+    transition: transform 1.4s cubic-bezier(0.77, 0, 0.175, 1);
+    transform-origin: center;
+    will-change: transform;
+    border: 4px solid #3D2010;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+  }
+ 
+  .door-panel.left  { left: 0;  transform-origin: left center; }
+  .door-panel.right { right: 0; transform-origin: right center; }
+ 
+  .door-panel.open-left  { transform: perspective(1200px) rotateY(-110deg); }
+  .door-panel.open-right { transform: perspective(1200px) rotateY(110deg); }
+ 
+  .door-ornament {
+    width: 70px; height: 70px;
+    border: 3px solid rgba(245, 237, 214, 0.4);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .door-ornament-inner {
+    width: 46px; height: 46px;
+    border: 2px solid rgba(245, 237, 214, 0.25);
+    border-radius: 50%;
+  }
+  .door-handle {
+    width: 14px; height: 50px;
+    background: linear-gradient(90deg, #C8993A, #F5D78A, #C8993A);
+    border-radius: 7px;
+    margin-top: 8px;
+  }
+  .door-stripe {
+    width: 60%; height: 3px;
+    background: rgba(245, 237, 214, 0.15);
+    border-radius: 2px;
+  }
+ 
+  #gate-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--krem);
+    z-index: 10;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+ 
+  #gate-text p {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+  }
+ 
+  .scroll-hint {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 110;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--krem);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    font-family: 'Nunito Sans', sans-serif;
+    transition: opacity 0.5s ease;
+    animation: bounce 2s infinite;
+  }
+ 
+  .scroll-arrow {
+    width: 24px; height: 24px;
+    border-right: 2px solid var(--krem);
+    border-bottom: 2px solid var(--krem);
+    transform: rotate(45deg);
+    opacity: 0.7;
+  }
+ 
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(8px); }
+  }
+ 
+  /* ── MAIN CONTENT ── */
+  #main-content {
+    opacity: 0;
+    transition: opacity 0.8s ease 0.3s;
+  }
+  #main-content.visible { opacity: 1; }
+ 
+  /* ── NAVBAR ── */
+  nav {
+    background: rgba(245, 237, 214, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(107, 66, 38, 0.2);
+  }
+ 
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    background-image:
+      linear-gradient(to bottom, rgba(44,26,14,0.55) 0%, rgba(44,26,14,0.2) 60%, rgba(245,237,214,1) 100%),
+      url('https://picsum.photos/seed/rumahjawa/1600/900');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+  }
+ 
+  .hero-tag {
+    display: inline-block;
+    background: rgba(245,237,214,0.15);
+    border: 1px solid rgba(245,237,214,0.35);
+    color: var(--krem);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    padding: 5px 14px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    font-family: 'Nunito Sans', sans-serif;
+    margin-bottom: 1rem;
+    backdrop-filter: blur(4px);
+  }
+ 
+  /* ── SECTION DIVIDER ── */
+  .batik-divider {
+    display: flex; align-items: center; gap: 16px;
+    margin: 0 auto 2.5rem;
+    max-width: 300px;
+  }
+  .batik-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--kayu-muda), transparent); }
+  .batik-icon { color: var(--kayu); font-size: 1.1rem; }
+ 
+  /* ── METRIC CARDS ── */
+  .metric-card {
+    background:
+      repeating-linear-gradient(
+        135deg,
+        transparent, transparent 10px,
+        rgba(245,237,214,0.4) 10px, rgba(245,237,214,0.4) 11px
+      ),
+      var(--kayu);
+    border-radius: 4px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    color: var(--krem);
+    position: relative;
+    overflow: hidden;
+  }
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(245,237,214,0.2);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+ 
+  /* ── CASE STUDY CARDS ── */
+  .case-card {
+    background: var(--krem);
+    border: 1px solid rgba(107,66,38,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .case-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(44,26,14,0.15);
+  }
+ 
+  .tag-pill {
+    display: inline-block;
+    background: rgba(74,92,58,0.12);
+    color: var(--hijau-lumut);
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+ 
+  /* ── TESTIMONIAL ── */
+  .testimonial-card {
+    background: var(--kayu-muda);
+    border-radius: 4px;
+    padding: 2rem;
+    color: var(--krem);
+    position: relative;
+  }
+  .testimonial-card::before {
+    content: '"';
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    color: rgba(245,237,214,0.25);
+    line-height: 1;
+  }
+ 
+  /* ── SKILLS BAR ── */
+  .skill-bar-bg {
+    background: rgba(107,66,38,0.15);
+    border-radius: 2px;
+    height: 6px;
+    overflow: hidden;
+  }
+  .skill-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--kayu), var(--tanah));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+  }
+ 
+  /* ── CONTACT ── */
+  .contact-input {
+    width: 100%;
+    background: rgba(245,237,214,0.8);
+    border: 1px solid rgba(107,66,38,0.3);
+    border-radius: 2px;
+    padding: 0.75rem 1rem;
+    font-family: 'Nunito Sans', sans-serif;
+    color: var(--tinta);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .contact-input:focus { border-color: var(--kayu); }
+ 
+  .btn-primary {
+    background: var(--kayu);
+    color: var(--krem);
+    border: none;
+    padding: 0.875rem 2.5rem;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-primary:hover { background: var(--tinta); }
+  .btn-primary:active { transform: scale(0.98); }
+ 
+  /* ── PARALLAX SECTIONS ── */
+  .parallax-layer {
+    will-change: transform;
+  }
+ 
+  /* ── TEXTURE OVERLAY ── */
+  .texture-paper {
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23F5EDD6'/%3E%3Ccircle cx='1' cy='1' r='0.5' fill='rgba(107,66,38,0.06)'/%3E%3Ccircle cx='3' cy='3' r='0.5' fill='rgba(107,66,38,0.06)'/%3E%3C/svg%3E");
+  }
+ 
+  /* ── FLOATING LEAF ── */
+  .deco-leaf {
+    position: absolute;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+ 
+  @media (max-width: 768px) {
+    #hero { background-attachment: scroll; }
+  }
+ 
+  @media (prefers-reduced-motion: reduce) {
+    .door-panel, #main-content, .skill-bar-fill { transition: none !important; }
+  }
+</style>
+</head>
+<body class="texture-paper">
+ 
+<!-- ═══════════════════ GATE ═══════════════════ -->
+<div id="gate">
+  <div id="gate-bg"></div>
+ 
+  <div class="door-panel left" id="door-left">
+    <div class="door-stripe"></div>
+    <div class="door-ornament"><div class="door-ornament-inner"></div></div>
+    <div class="door-handle"></div>
+    <div class="door-ornament"><div class="door-ornament-inner"></div></div>
+    <div class="door-stripe"></div>
+  </div>
+ 
+  <div class="door-panel right" id="door-right">
+    <div class="door-stripe"></div>
+    <div class="door-ornament"><div class="door-ornament-inner"></div></div>
+    <div class="door-handle"></div>
+    <div class="door-ornament"><div class="door-ornament-inner"></div></div>
+    <div class="door-stripe"></div>
+  </div>
+ 
+  <div id="gate-text">
+    <h1 style="font-family:'Playfair Display',serif; font-size:2rem; font-weight:400; color:var(--krem); letter-spacing:0.04em;">Selamat Datang</h1>
+    <p>Gulir ke bawah untuk membuka pintu</p>
+  </div>
+</div>
+ 
+<div class="scroll-hint" id="scroll-hint">
+  <span style="letter-spacing:0.12em; font-size:0.7rem;">SCROLL</span>
+  <div class="scroll-arrow"></div>
+</div>
+ 
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<div id="main-content">
+ 
+  <!-- NAV -->
+  <nav class="fixed top-0 left-0 right-0 z-50 px-8 py-4 flex items-center justify-between">
+    <span style="font-family:'Playfair Display',serif; color:var(--kayu); font-size:1.1rem; letter-spacing:0.06em;">
+      Kang Dzul<span style="color:var(--hijau-lumut);">.</span>
+    </span>
+    <div class="hidden md:flex gap-8" style="font-size:0.85rem; letter-spacing:0.06em; color:var(--kayu);">
+      <a href="#tentang" class="hover:text-amber-800 transition-colors">Tentang</a>
+      <a href="#portofolio" class="hover:text-amber-800 transition-colors">Portofolio</a>
+      <a href="#keahlian" class="hover:text-amber-800 transition-colors">Keahlian</a>
+      <a href="#testimoni" class="hover:text-amber-800 transition-colors">Testimoni</a>
+      <a href="#kontak" class="hover:text-amber-800 transition-colors">Kontak</a>
+    </div>
+  </nav>
+ 
+  <!-- HERO -->
+  <section id="hero" class="relative">
+    <div class="container mx-auto px-6 md:px-16 pt-24">
+      <div class="max-w-2xl">
+        <div class="hero-tag">Digital Marketer · Jombang, East Java</div>
+        <h1 style="font-family:'Playfair Display',serif; font-size:clamp(2.4rem,5vw,4rem); font-weight:700; color:var(--krem); line-height:1.15; margin-bottom:1.25rem;">
+          dzulfaarm,<br/><em style="font-weight:400;">tumbuh lebih Kuat.</em>
+        </h1>
+        <p style="color:rgba(245,237,214,0.85); font-size:1.05rem; line-height:1.75; max-width:480px; margin-bottom:2rem;">
+          Saya membantu brand menemukan suaranya di dunia digital — lewat strategi SEO, konten yang bercerita, dan kampanye yang mengonversi.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#portofolio" class="btn-primary">Lihat Karya Saya</a>
+          <a href="#kontak" style="border:1px solid rgba(245,237,214,0.5); color:var(--krem); padding:0.875rem 2rem; border-radius:2px; font-size:0.9rem; letter-spacing:0.05em; transition:background 0.2s;" class="hover:bg-white/10">Hubungi Saya</a>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- DECO LEAVES -->
+    <svg class="deco-leaf" style="bottom:60px;right:80px;width:280px;" viewBox="0 0 200 200" fill="none">
+      <path d="M100 10 Q170 60 160 120 Q150 170 100 180 Q50 170 40 120 Q30 60 100 10Z" fill="#4A5C3A"/>
+      <line x1="100" y1="10" x2="100" y2="180" stroke="#4A5C3A" stroke-width="2"/>
+      <line x1="100" y1="60" x2="140" y2="90" stroke="#4A5C3A" stroke-width="1"/>
+      <line x1="100" y1="90" x2="55" y2="115" stroke="#4A5C3A" stroke-width="1"/>
+      <line x1="100" y1="120" x2="135" y2="140" stroke="#4A5C3A" stroke-width="1"/>
+    </svg>
+  </section>
+ 
+  <!-- TENTANG -->
+  <section id="tentang" class="py-24 px-6">
+    <div class="container mx-auto max-w-5xl">
+      <div class="batik-divider">
+        <div class="batik-line"></div>
+        <span class="batik-icon">✦</span>
+        <div class="batik-line"></div>
+      </div>
+ 
+      <div class="grid md:grid-cols-2 gap-16 items-center">
+        <div>
+          <p style="color:var(--hijau-lumut); font-size:0.8rem; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.75rem;">Tentang Saya</p>
+          <h2 style="font-family:'Playfair Display',serif; font-size:2.2rem; color:var(--tinta); line-height:1.25; margin-bottom:1.25rem;">
+            Dari mustahiq<br/>menuju muzakki.
+          </h2>
+          <p style="font-family:'Lora',serif; font-style:italic; color:var(--kayu-muda); font-size:1.05rem; line-height:1.8; margin-bottom:1rem;">
+            "Pemasaran digital yang baik bukan tentang berteriak paling keras — tapi tentang bercerita paling jujur."
+          </p>
+          <p style="line-height:1.85; color:#4a3728; font-size:0.95rem;">
+            Saya adalah seorang digital marketer berbasis di Jombang, Jawa Timur, dengan keahlian dalam membangun brand awareness organik, optimasi SEO, dan manajemen konten media sosial. Pengalaman saya mencakup platform seperti TikTok, Instagram, dan Google — memastikan setiap konten tidak hanya indah, tapi juga bekerja keras untuk bisnis Anda.
+          </p>
+        </div>
+        <div class="relative">
+          <img src="https://picsum.photos/seed/portrait99/480/560" alt="Foto profil" class="w-full object-cover" style="border-radius:4px; filter:sepia(20%);" />
+          <div style="position:absolute; bottom:-16px; right:-16px; background:var(--kayu); color:var(--krem); padding:1rem 1.5rem; border-radius:2px;">
+            <p style="font-size:0.75rem; letter-spacing:0.1em; opacity:0.7; margin-bottom:2px;">PENGALAMAN</p>
+            <p style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700;">4+ Tahun</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- GROWTH METRICS -->
+  <section style="background:var(--hijau-lumut);" class="py-20 px-6">
+    <div class="container mx-auto max-w-5xl">
+      <p style="text-align:center; color:rgba(245,237,214,0.6); font-size:0.78rem; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:2.5rem;">Angka Berbicara</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="metric-card">
+          <p style="font-family:'Playfair Display',serif; font-size:2.4rem; font-weight:700; color:var(--krem);" class="counter" data-target="340">0</p>
+          <p style="font-size:0.75rem; color:rgba(245,237,214,0.65); letter-spacing:0.06em; margin-top:4px;">% Peningkatan Trafik Organik</p>
+        </div>
+        <div class="metric-card">
+          <p style="font-family:'Playfair Display',serif; font-size:2.4rem; font-weight:700; color:var(--krem);" class="counter" data-target="50">0</p>
+          <p style="font-size:0.75rem; color:rgba(245,237,214,0.65); letter-spacing:0.06em; margin-top:4px;">+ Klien Aktif Berhasil</p>
+        </div>
+        <div class="metric-card">
+          <p style="font-family:'Playfair Display',serif; font-size:2.4rem; font-weight:700; color:var(--krem);" class="counter" data-target="2.8">0</p>
+          <p style="font-size:0.75rem; color:rgba(245,237,214,0.65); letter-spacing:0.06em; margin-top:4px;">Juta Total Jangkauan Konten</p>
+        </div>
+        <div class="metric-card">
+          <p style="font-family:'Playfair Display',serif; font-size:2.4rem; font-weight:700; color:var(--krem);" class="counter" data-target="92">0</p>
+          <p style="font-size:0.75rem; color:rgba(245,237,214,0.65); letter-spacing:0.06em; margin-top:4px;">% Tingkat Kepuasan Klien</p>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- PORTOFOLIO / CASE STUDIES -->
+  <section id="portofolio" class="py-24 px-6" style="background:var(--krem-tua);">
+    <div class="container mx-auto max-w-5xl">
+      <div class="batik-divider">
+        <div class="batik-line"></div>
+        <span class="batik-icon">✦</span>
+        <div class="batik-line"></div>
+      </div>
+      <div class="text-center mb-12">
+        <p style="color:var(--hijau-lumut); font-size:0.78rem; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.5rem;">Studi Kasus</p>
+        <h2 style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--tinta);">Cerita di Balik Angka</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+ 
+        <!-- Card 1 -->
+        <div class="case-card">
+          <div style="position:relative; overflow:hidden; height:180px;">
+            <img src="https://picsum.photos/seed/tiktok77/400/250" alt="Studi kasus TikTok" style="width:100%; height:100%; object-fit:cover; filter:sepia(15%); transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+            <div style="position:absolute; top:12px; left:12px;"><span class="tag-pill">TikTok · Brand Awareness</span></div>
+          </div>
+          <div style="padding:1.25rem;">
+            <h3 style="font-family:'Lora',serif; font-size:1.05rem; color:var(--tinta); margin-bottom:0.5rem;">PeTIK Jombang — Viral Organik</h3>
+            <p style="font-size:0.85rem; line-height:1.7; color:#5a4030; margin-bottom:1rem;">Strategi konten TikTok @petikjombang yang mendorong brand awareness lokal dengan pendekatan storytelling otentik pedesaan.</p>
+            <div class="flex justify-between text-xs" style="color:var(--kayu-muda); border-top:1px solid rgba(107,66,38,0.12); padding-top:0.75rem;">
+              <span>📈 +280% jangkauan</span>
+              <span>❤️ Engagement 8.4%</span>
+            </div>
+          </div>
+        </div>
+ 
+        <!-- Card 2 -->
+        <div class="case-card">
+          <div style="position:relative; overflow:hidden; height:180px;">
+            <img src="https://picsum.photos/seed/seo22/400/250" alt="Studi kasus SEO" style="width:100%; height:100%; object-fit:cover; filter:sepia(15%); transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+            <div style="position:absolute; top:12px; left:12px;"><span class="tag-pill">SEO · Konten</span></div>
+          </div>
+          <div style="padding:1.25rem;">
+            <h3 style="font-family:'Lora',serif; font-size:1.05rem; color:var(--tinta); margin-bottom:0.5rem;">UMKM Kuliner — Halaman 1 Google</h3>
+            <p style="font-size:0.85rem; line-height:1.7; color:#5a4030; margin-bottom:1rem;">Optimasi on-page dan strategi konten blog yang membawa UMKM kuliner lokal ke peringkat teratas pencarian dalam 3 bulan.</p>
+            <div class="flex justify-between text-xs" style="color:var(--kayu-muda); border-top:1px solid rgba(107,66,38,0.12); padding-top:0.75rem;">
+              <span>🔍 #1 pada 12 keyword</span>
+              <span>📊 +340% trafik organik</span>
+            </div>
+          </div>
+        </div>
+ 
+        <!-- Card 3 -->
+        <div class="case-card">
+          <div style="position:relative; overflow:hidden; height:180px;">
+            <img src="https://picsum.photos/seed/ads55/400/250" alt="Studi kasus Ads" style="width:100%; height:100%; object-fit:cover; filter:sepia(15%); transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+            <div style="position:absolute; top:12px; left:12px;"><span class="tag-pill">Meta Ads · Konversi</span></div>
+          </div>
+          <div style="padding:1.25rem;">
+            <h3 style="font-family:'Lora',serif; font-size:1.05rem; color:var(--tinta); margin-bottom:0.5rem;">Fashion Lokal — ROAS 6.2x</h3>
+            <p style="font-size:0.85rem; line-height:1.7; color:#5a4030; margin-bottom:1rem;">Kampanye Meta Ads dengan targeting behavioral yang presisi menghasilkan return on ad spend tertinggi dalam sejarah brand.</p>
+            <div class="flex justify-between text-xs" style="color:var(--kayu-muda); border-top:1px solid rgba(107,66,38,0.12); padding-top:0.75rem;">
+              <span>💰 ROAS 6.2x</span>
+              <span>🎯 CTR 4.8%</span>
+            </div>
+          </div>
+        </div>
+ 
+      </div>
+    </div>
+  </section>
+ 
+  <!-- KEAHLIAN -->
+  <section id="keahlian" class="py-24 px-6">
+    <div class="container mx-auto max-w-4xl">
+      <div class="batik-divider">
+        <div class="batik-line"></div>
+        <span class="batik-icon">✦</span>
+        <div class="batik-line"></div>
+      </div>
+      <div class="text-center mb-12">
+        <p style="color:var(--hijau-lumut); font-size:0.78rem; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.5rem;">Keahlian</p>
+        <h2 style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--tinta);">Alat di Tangan Petani Digital</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-x-16 gap-y-8" id="skills-container">
+        <div>
+          <div class="flex justify-between mb-2">
+            <span style="font-size:0.9rem; font-weight:600; color:var(--tinta);">SEO & Content Strategy</span>
+            <span style="font-size:0.85rem; color:var(--kayu-muda);">92%</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="92"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-2">
+            <span style="font-size:0.9rem; font-weight:600; color:var(--tinta);">TikTok & Instagram Marketing</span>
+            <span style="font-size:0.85rem; color:var(--kayu-muda);">88%</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="88"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-2">
+            <span style="font-size:0.9rem; font-weight:600; color:var(--tinta);">Meta & Google Ads</span>
+            <span style="font-size:0.85rem; color:var(--kayu-muda);">80%</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="80"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-2">
+            <span style="font-size:0.9rem; font-weight:600; color:var(--tinta);">Brand Storytelling</span>
+            <span style="font-size:0.85rem; color:var(--kayu-muda);">95%</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="95"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-2">
+            <span style="font-size:0.9rem; font-weight:600; color:var(--tinta);">Analitik & Pelaporan Data</span>
+            <span style="font-size:0.85rem; color:var(--kayu-muda);">76%</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="76"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-2">
+            <span style="font-size:0.9rem; font-weight:600; color:var(--tinta);">Email & Marketing Automation</span>
+            <span style="font-size:0.85rem; color:var(--kayu-muda);">72%</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="72"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- TESTIMONI -->
+  <section id="testimoni" style="background:var(--hijau-lumut);" class="py-24 px-6">
+    <div class="container mx-auto max-w-5xl">
+      <div class="text-center mb-12">
+        <p style="color:rgba(245,237,214,0.55); font-size:0.78rem; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.5rem;">Apa Kata Mereka</p>
+        <h2 style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--krem);">Suara dari Ladang yang Sudah Panen</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+ 
+        <div class="testimonial-card">
+          <p style="font-size:0.9rem; line-height:1.75; color:rgba(245,237,214,0.88); position:relative; z-index:1; margin-bottom:1.25rem;">
+            Konten TikTok kami langsung mendapat ribuan tayangan organik setelah strategi dari Kang Dzul diterapkan. Luar biasa hasilnya!
+          </p>
+          <div class="flex items-center gap-3">
+            <img src="https://picsum.photos/seed/klien1/40/40" alt="Foto klien" style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:2px solid rgba(245,237,214,0.3);" />
+            <div>
+              <p style="font-weight:600; font-size:0.88rem; color:var(--krem);">Siti R.</p>
+              <p style="font-size:0.75rem; color:rgba(245,237,214,0.55);">Owner, Warung Batik Jombang</p>
+            </div>
+          </div>
+        </div>
+ 
+        <div class="testimonial-card">
+          <p style="font-size:0.9rem; line-height:1.75; color:rgba(245,237,214,0.88); position:relative; z-index:1; margin-bottom:1.25rem;">
+            SEO website kami naik drastis. Dalam 3 bulan sudah di halaman pertama Google untuk kata kunci utama. Worth every penny!
+          </p>
+          <div class="flex items-center gap-3">
+            <img src="https://picsum.photos/seed/klien2/40/40" alt="Foto klien" style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:2px solid rgba(245,237,214,0.3);" />
+            <div>
+              <p style="font-weight:600; font-size:0.88rem; color:var(--krem);">Budi S.</p>
+              <p style="font-size:0.75rem; color:rgba(245,237,214,0.55);">Direktur, UMKM Kuliner Lokal</p>
+            </div>
+          </div>
+        </div>
+ 
+        <div class="testimonial-card">
+          <p style="font-size:0.9rem; line-height:1.75; color:rgba(245,237,214,0.88); position:relative; z-index:1; margin-bottom:1.25rem;">
+            Pendekatan storytelling-nya beda dari marketer lain. Kampanye kami terasa lebih manusiawi dan hasilnya nyata di penjualan.
+          </p>
+          <div class="flex items-center gap-3">
+            <img src="https://picsum.photos/seed/klien3/40/40" alt="Foto klien" style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:2px solid rgba(245,237,214,0.3);" />
+            <div>
+              <p style="font-weight:600; font-size:0.88rem; color:var(--krem);">Rina P.</p>
+              <p style="font-size:0.75rem; color:rgba(245,237,214,0.55);">Founder, Fashion Brand Surabaya</p>
+            </div>
+          </div>
+        </div>
+ 
+      </div>
+    </div>
+  </section>
+ 
+  <!-- KONTAK -->
+  <section id="kontak" class="py-24 px-6">
+    <div class="container mx-auto max-w-xl text-center">
+      <div class="batik-divider">
+        <div class="batik-line"></div>
+        <span class="batik-icon">✦</span>
+        <div class="batik-line"></div>
+      </div>
+      <p style="color:var(--hijau-lumut); font-size:0.78rem; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.5rem;">Mulai Kolaborasi</p>
+      <h2 style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--tinta); margin-bottom:0.75rem;">Mari Berkebun Bersama</h2>
+      <p style="color:#6b5040; line-height:1.75; margin-bottom:2.5rem; font-size:0.95rem;">
+        Siap membawa brand Anda tumbuh organik dan berkelanjutan? Kirimkan pesan, dan kita mulai dari benih ide.
+      </p>
+      <div style="display:flex; flex-direction:column; gap:1rem; text-align:left;">
+        <input type="text" placeholder="Nama Anda" class="contact-input" />
+        <input type="email" placeholder="Email Anda" class="contact-input" />
+        <textarea placeholder="Ceritakan kebutuhan Anda..." rows="4" class="contact-input" style="resize:vertical;"></textarea>
+        <button class="btn-primary" style="width:100%; font-size:0.9rem;">Kirim Pesan →</button>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- FOOTER -->
+  <footer style="background:var(--tinta); color:rgba(245,237,214,0.5); text-align:center; padding:2rem; font-size:0.8rem; letter-spacing:0.06em;">
+    <p style="font-family:'Playfair Display',serif; color:var(--krem); font-size:1rem; margin-bottom:0.5rem;">Kang Dzul</p>
+    <p>Digital Marketer · Jombang, East Java · © 2025</p>
+  </footer>
+ 
+</div><!-- end #main-content -->
+ 
+<script>
+// ── DOOR / GATE LOGIC ──────────────────────────────────────────
+const doorLeft    = document.getElementById('door-left');
+const doorRight   = document.getElementById('door-right');
+const gateBg      = document.getElementById('gate-bg');
+const gateText    = document.getElementById('gate-text');
+const gate        = document.getElementById('gate');
+const scrollHint  = document.getElementById('scroll-hint');
+const mainContent = document.getElementById('main-content');
+ 
+let doorOpened = false;
+let doorFullyOpen = false;
+let ticking = false;
+ 
+// Open threshold — how many px of scroll triggers full open
+const OPEN_START   = 30;
+const OPEN_END     = 220;
+ 
+function lerp(a, b, t) { return a + (b - a) * Math.min(1, Math.max(0, t)); }
+ 
+function updateGate(scrollY) {
+  if (doorFullyOpen) return;
+ 
+  const progress = Math.max(0, Math.min(1, (scrollY - OPEN_START) / (OPEN_END - OPEN_START)));
+ 
+  if (progress <= 0) {
+    doorLeft.classList.remove('open-left');
+    doorRight.classList.remove('open-right');
+    gateBg.style.opacity = '1';
+    gateText.style.opacity = '1';
+    scrollHint.style.opacity = '1';
+    return;
+  }
+ 
+  // rotate doors
+  const angle = lerp(0, 110, progress);
+  doorLeft.style.transform  = `perspective(1200px) rotateY(-${angle}deg)`;
+  doorRight.style.transform = `perspective(1200px) rotateY(${angle}deg)`;
+ 
+  // fade gate bg & text
+  gateBg.style.opacity   = lerp(1, 0, progress);
+  gateText.style.opacity = lerp(1, 0, progress * 2);
+  scrollHint.style.opacity = lerp(1, 0, progress * 3);
+ 
+  // when fully open, reveal content and remove gate
+  if (progress >= 1) {
+    doorFullyOpen = true;
+    mainContent.classList.add('visible');
+    setTimeout(() => { gate.style.display = 'none'; }, 700);
+    scrollHint.style.display = 'none';
+  } else {
+    mainContent.style.opacity = lerp(0, 1, progress);
+  }
+}
+ 
+window.addEventListener('scroll', () => {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => {
+    updateGate(window.scrollY);
+    ticking = false;
+  });
+}, { passive: true });
+ 
+// ── COUNTER ANIMATION ─────────────────────────────────────────
+function animateCounters() {
+  document.querySelectorAll('.counter').forEach(el => {
+    const target = parseFloat(el.dataset.target);
+    const isDecimal = target % 1 !== 0;
+    const duration = 1800;
+    const start = performance.now();
+ 
+    function step(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const value = ease * target;
+      el.textContent = isDecimal ? value.toFixed(1) : Math.round(value);
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+}
+ 
+// ── SKILL BARS ────────────────────────────────────────────────
+function animateSkillBars() {
+  document.querySelectorAll('.skill-bar-fill').forEach(bar => {
+    bar.style.width = bar.dataset.width + '%';
+  });
+}
+ 
+// ── INTERSECTION OBSERVER ─────────────────────────────────────
+const metricsSection = document.querySelector('#main-content section:nth-child(3)');
+const skillsSection  = document.getElementById('skills-container');
+ 
+let countersRan = false;
+let skillsRan   = false;
+ 
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      if (e.target === metricsSection && !countersRan) {
+        countersRan = true;
+        animateCounters();
+      }
+      if (e.target === skillsSection && !skillsRan) {
+        skillsRan = true;
+        animateSkillBars();
+      }
+    }
+  });
+}, { threshold: 0.3 });
+ 
+if (metricsSection) observer.observe(metricsSection);
+if (skillsSection)  observer.observe(skillsSection);
+ 
+// ── PARALLAX HERO ─────────────────────────────────────────────
+const hero = document.getElementById('hero');
+window.addEventListener('scroll', () => {
+  if (!doorFullyOpen) return;
+  const scrollY = window.scrollY;
+  if (hero) {
+    hero.style.backgroundPositionY = `calc(50% + ${scrollY * 0.3}px)`;
+  }
+}, { passive: true });
+ 
+// ── PREVENT BODY SCROLL WHILE GATE OPEN ───────────────────────
+// (allow scroll so user CAN trigger the animation, but manage body height)
+document.body.style.minHeight = '300vh';
+ 
+// Once door is fully open, reset body so scroll feels natural
+function checkFinalOpen() {
+  if (doorFullyOpen) { document.body.style.minHeight = ''; return; }
+  requestAnimationFrame(checkFinalOpen);
+}
+requestAnimationFrame(checkFinalOpen);
+</script>
+</body>
+</html>
